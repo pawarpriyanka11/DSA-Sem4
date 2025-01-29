@@ -13,6 +13,7 @@ class BT
      {
         data=x;
         left=NULL;
+        right=NULL;
         }     
      
 }*root;
@@ -22,10 +23,9 @@ class BT
     {
       if(root==NULL)
       {
-        cout<<"\nTree is not created yet!";
         return;
       }
-      cout<<root->data;
+      cout<<root->data<<" ";
       
       display(root->left);
       display(root->right);
@@ -33,7 +33,7 @@ class BT
     
     void insert(BT *root1,BT *next1)
     {
-       int ch;
+       char ch;
        cout<<"\nWhere do you want to insert(L/R): ";
        cin>>ch;
        if(ch=='l'||ch=='L')
@@ -47,7 +47,7 @@ class BT
            insert(root1->left,next1);
          }
        }
-       else
+       else 
        {
          if(root1->right==NULL)
          {
@@ -88,7 +88,7 @@ void create()
     int main()
     {
       int cc;
-      BT *root;
+      root=NULL;
        do
        {
           cout<<"\nEnter your choice: \n1.CREATE\n2.DISPLAY\n3.EXIT: ";
@@ -114,4 +114,4 @@ void create()
           }
        }while(cc!=3);
        return 0;
-    }  
+    } 
