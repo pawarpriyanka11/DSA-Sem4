@@ -19,7 +19,7 @@ class BT
 }*root;
 
     
-    void display(BT *root)
+    void preorder(BT *root)
     {
       if(root==NULL)
       {
@@ -27,9 +27,38 @@ class BT
       }
       cout<<root->data<<" ";
       
-      display(root->left);
-      display(root->right);
+      preorder(root->left);
+      preorder(root->right);
     }
+    
+    
+    void inorder(BT *root)
+    {
+      if(root==NULL)
+      {
+        return;
+      }
+     
+      
+      inorder(root->left);
+      cout<<root->data<<" ";
+      inorder(root->right);
+    }
+    
+    
+    void postorder(BT *root)
+    {
+      if(root==NULL)
+      {
+        return;
+      }
+      
+      postorder(root->left);
+      postorder(root->right);
+      cout<<root->data<<" ";
+    }
+    
+    
     
     void insert(BT *root1,BT *next1)
     {
@@ -61,7 +90,9 @@ class BT
        }
     }
     
-void create()
+    
+    
+    void create()
     {
         int val,c;
         do{
@@ -82,8 +113,9 @@ void create()
         cout<<"\nWant to insert more?";
         cin>>c;
         }while(c!=0);
-       
     } 
+    
+    
     
     int main()
     {
@@ -91,7 +123,7 @@ void create()
       root=NULL;
        do
        {
-          cout<<"\nEnter your choice: \n1.CREATE\n2.DISPLAY\n3.EXIT: ";
+          cout<<"\n\n1.CREATE\n2.PREOREDER\n3.INOREDER\n4.POSTORDR\n5.EXIT\nEnter your choice: ";
           cin>>cc;
           switch(cc)
           {
@@ -100,10 +132,19 @@ void create()
             break;
             
             case 2:
-            display(root);
+            preorder(root);
             break;
             
             case 3:
+            inorder(root);
+            break;
+            
+            
+            case 4:
+            postorder(root);
+            break;
+            
+            case 5:
             cout<<"\nExiting from the code!";
             return 0;
             break;
@@ -112,6 +153,6 @@ void create()
             cout<<"\nInvalid Case!";
             
           }
-       }while(cc!=3);
+       }while(cc!=5);
        return 0;
     } 
