@@ -26,7 +26,7 @@ void insert(EMP*& root, EMP* next) {
         return;
     }
 
-    if (next->id < root->id) {
+    if (next->salary < root->salary) {
         insert(root->left, next);
     } else {
         insert(root->right, next);
@@ -39,11 +39,11 @@ void create() {
     double s1;
 
     do {
-        cout << "Enter the name, id, salary of emp: ";
+        cout << "\nEnter the name, id, salary of emp: ";
         cin >> n1 >> i1 >> s1;
 
         EMP* next = new EMP(n1, i1, s1);
-        insert(root, next);  // Ensure `root` is updated correctly
+        insert(root, next); 
 
         cout << "\nWant to insert more? (0 to stop): ";
         cin >> c;
@@ -52,51 +52,53 @@ void create() {
 
 
 
-EMP* search1(EMP* root,int key)
+EMP* search1(EMP* root,int sal)
 {
     if(root==NULL)return NULL;
-    if(root->id==key)
+    next1=root;
+    if(next1->salary==sal)
     {
         return root;
     }
-    else if(root->id>key)
+    else if(next1->salary>sal)
     {
-        search1(root->left,key);
+        search1(next1->left,sal);
     }
-    else if(root->id<key){
-        search1(root->right,key);
+    else if(next1->salary<sal){
+        search1(next1->right,sal);
     }
     else{
         return NULL;
     }
+    return next1;
 
 }
 
 
-void update(EMP* root,int key)
+void update(EMP* root,EMP* newNode)
 {
-    int i1;
-    string n1;
-    double s1;
-    if(root==NULL) return;
-if(search1(root,key))
+if(root==NULL) return;
+if(root->id==newNode->id)
 {
-    cout << "Enter the name, id, salary of emp: ";
-        cin >> n1 >> i1 >> s1;
-        root->name=n1;
-        root->id=i1;
-        root->salary=s1;
-        cout<<"\nRecoed Updated!";
+  root->name=newNode->name;
+  return;
+}
+else
+{
+  update(root->left,newNode);
+  update(root->right,newNode);
+   
+}
+}
 
-}
-}
+
 
 
 void display(EMP* root) {
     if (root == NULL) return;
-
-    display(root->left);
     cout << "Name: " << root->name << "\nID: " << root->id << " \nSalary: " << root->salary << endl;
+    display(root->left);
+  
     display(root->right);
 }
 
@@ -107,16 +109,12 @@ void display(EMP* root) {
 void maxsal(EMP* root)
 {
    if(root==NULL) return;
-
-
     while (root->right!=NULL) 
     { 
         root=root->right;
     }
-    cout << "Employee with Minimum Salary:\n";
+    cout << "\nEmployee with Minimum Salary:\n";
     cout << "Name: " << root->name<< " ID: " << root->id<< " Salary: "<< root->salary << endl;
-
-   
 }
 
 
@@ -130,13 +128,14 @@ void minsal(EMP* root)
     { 
         root=root->left;
     }
-    cout << "Employee with Minimum Salary:\n";
+    cout << "\nEmployee with Minimum Salary:\n";
     cout << "Name: " << root->name<< " ID: " << root->id<< " Salary: "<< root->salary << endl; 
 }
 
 
 void avgsal(EMP* root)
 {
+
 if(root==NULL) return;
 
 double total=0;
@@ -159,6 +158,8 @@ while(root!=NULL||top!=-1)
     root=root->right;
 }
 cout<<"AverageSalary: "<<(total/cnt)<< endl;
+
+
 }
 
 
@@ -169,11 +170,51 @@ int countNodes(EMP* root) {
     return 1 + countNodes(root->left) + countNodes(root->right);
 }
 
+
+
+EMP* delete1(EMP* root, int x) {
+    if (root == NULL) return NULL;
+
+    if (x < root->salary) {
+        root->left = delete1(root->left, x);
+    } 
+    else if (x > root->salary) {
+        root->right = delete1(root->right, x);
+    } 
+    else {
+        if (root->left == NULL || root->right == NULL) 
+        {
+        if(root->left != NULL) 
+        {
+        next1=root->left;
+        }
+        else
+        { next1=root->right;}
+
+            delete root;
+            return next1;
+        }
+
+       
+        EMP* successor = root->right;
+        while (successor->left != NULL) {
+            successor = successor->left;
+        }
+
+        root->salary = successor->salary; 
+        root->right = delete1(root->right, successor->salary); 
+    }
+    return root;
+}
+
+
 int main() {
-    int ch,val;
+    int ch,val,id1;
+    string name1;
+    double sal1;
 
     do {
-        cout<<"\n1. Create\n2. Search\n3. Update\n4. Display\n5. Minimum salary\n6. Maximum salary\n7. Find Average Salary\n8. Total number of employees\n9. exit\n Enter your choice: ";
+        cout<<"\n1. Create\n2. Search\n3. Update\n4. Display\n5. Minimum salary\n6. Maximum salary\n7. Find Average Salary\n8. Total number of employees\n9. exit\nEnter your choice: ";
         cin >> ch;
 
         switch (ch) {
@@ -182,20 +223,28 @@ int main() {
                 break;
 
             case 2:
-            cout<<"Enter the id that you want to search: ";
+            cout<<"\nEnter the salary that you want to search: ";
             cin>>val;
             next1 = search1(root, val);
-            display(next1);
+            if(next1==NULL)
+            {
+              cout<<"\n NO node found!";
+            }
+            else
+            {
+              cout<<"name: "<<next1->name<<" ID:"<<next1->id<<" salary:"<<next1->salary;
+            }
+          
             break;
 
             case 3:
-            cout<<"Enter the id that you want to search: ";
-            cin>>val;
-            update(root, val);
+            cout<<"\nEnter id,name,sal for updating a node: ";
+            cin>>id1>>name1>>sal1;
+            update(root,new EMP(name1,id1,sal1));
                 break;
 
                 case 4:
-                cout << "Displaying Employees:\n";
+                cout << "\nDisplaying Employees:\n";
                 display(root);
                 break;
             
@@ -212,11 +261,11 @@ int main() {
                 break;
             
                 case 8:
-                cout<<countNodes(root)<<" number of emp are there";
+                cout<<"\n"<<countNodes(root)<<" number of emp are there";
                 break;
             
                 case 9:
-                cout<<"\nExiting from the code!";
+                cout<<"\n\nExiting from the code!";
                 break;
             
                  default:
@@ -226,4 +275,3 @@ int main() {
                 }while(ch!=9);
                 return 0;
         }
-
