@@ -148,7 +148,7 @@ void avgsal(EMP* root) {
             root = s.top();
             s.pop();
             total += root->salary;
-            cnt++;
+             cnt++;
             root = root->right;
         }
     }
