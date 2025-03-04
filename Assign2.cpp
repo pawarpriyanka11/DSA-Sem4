@@ -1,4 +1,5 @@
 #include <iostream>
+#include<stack>
 using namespace std;
 
 class EMP {
@@ -16,11 +17,11 @@ public:
         left = NULL;
         right = NULL;
     }
-}*next1;
+}*root,*next1;
 
-EMP* root = NULL;
+//EMP* root = NULL;
 
-void insert(EMP*& root, EMP* next) {
+void insert(EMP* root, EMP* next) {
     if (root == NULL) {
         root = next; 
         return;
@@ -71,7 +72,6 @@ EMP* search1(EMP* root,int sal)
         return NULL;
     }
     return next1;
-
 }
 
 
@@ -133,33 +133,26 @@ void minsal(EMP* root)
 }
 
 
-void avgsal(EMP* root)
-{
+void avgsal(EMP* root) {
+    if (root==NULL) return;
 
-if(root==NULL) return;
+    stack<EMP*> s;
+    double total = 0;
+    int cnt = 0;
 
-double total=0;
-int cnt=0,top=-1;
-EMP* stack[100];
-
-
-while(root!=NULL||top!=-1)
-{
-    while(root!=NULL)
-    {
-        stack[++top]=root;
-        root=root->left;
+    while (root!=NULL || !s.empty()) {
+        if (root) {
+            s.push(root);
+            root = root->left;
+        } else {
+            root = s.top();
+            s.pop();
+            total += root->salary;
+            cnt++;
+            root = root->right;
+        }
     }
-
-    root=stack[top--];
-    total+=root->salary;
-    cnt++;
-
-    root=root->right;
-}
-cout<<"AverageSalary: "<<(total/cnt)<< endl;
-
-
+    cout << "AverageSalary: " << total / cnt << endl;
 }
 
 
@@ -209,6 +202,7 @@ EMP* delete1(EMP* root, int x) {
 
 
 int main() {
+    root = NULL;
     int ch,val,id1;
     string name1;
     double sal1;
