@@ -1,105 +1,130 @@
-#include<iostream>
+#include <iostream>
+#include <string>
 using namespace std;
 
-class Graph{
+class Graph {
 public:
- int v;
- int a[3][3]={0};
- Graph(int v1)
- {
-   v=v1;
+    int v;
+    int a[10][10] = {0}; // adjacency matrix
+    string city[10];     // array to store city names
 
- }
-
-
- void addEdge()
- {
-    int p,q,r;
-    
-
-    for(int i=0;i<v;i++)
-    {
-    cout<<"\nEnter the src , desti, weight: ";
-    cin>>p>>q>>r;
-        a[p][q]=r;
-        a[q][p]=r;
-    }
- }
-
- void printGraph()
- {
-    for(int i=0;i<v;i++)
-    {
-        for(int j=0;j<v;j++)
-        {
-            cout<<a[i][j]<<" ";
-        }
-        cout<<endl;
+    Graph(int v1) {
+        v = v1;
     }
 
- }
-
-
- void shortpath(int src) {
-    int d[10], visited[10] = {0};
-
-    // Step 1: Initialize distances
-    for (int i = 0; i < v; i++) {
-        d[i] = 9999;
-    }
-    d[src] = 0;
-
-    // Step 2: Loop to process all vertices
-    for (int cnt = 0; cnt < v - 1; cnt++) {
-        int u = -1, min = 9999;
-
-        // Step 3: Find unvisited vertex with minimum distance
+    int getIndex(string name) {
         for (int i = 0; i < v; i++) {
-            if (!visited[i] && d[i] < min) {
-                min = d[i];
-                u = i;
+            if (city[i] == name) {
+                return i;
             }
         }
+        return -1; // not found
+    }
 
-        if (u == -1) break;
-
-        // Step 4: Mark the selected vertex as visited
-        visited[u] = 1;
-
-        // Step 5: Update distance values
+    void inputCities() {
+        cout << "\nEnter names of " << v << " cities:\n";
         for (int i = 0; i < v; i++) {
-            int temp = d[u] + a[u][i];
-            if (!visited[i] && a[u][i] && temp < d[i]) {
-                d[i] = temp;
+            cin >> city[i];
+        }
+    }
+
+    void addEdge() {
+        int edges;
+        cout << "\nEnter the number of edges: ";
+        cin >> edges;
+
+        for (int i = 0; i < edges; i++) {
+            string src, dest;
+            int weight;
+            cout << "\nEnter source, destination, and weight: ";
+            cin >> src >> dest >> weight;
+
+            int p = getIndex(src);
+            int q = getIndex(dest);
+
+            if (p != -1 && q != -1) {
+                a[p][q] = weight;
+                a[q][p] = weight;
+            } else {
+                cout << "Invalid city name. Try again.\n";
+                i--; // retry this edge
             }
         }
     }
 
-    // Step 6: Output shortest distances
-    cout << "\nShortest distances from source " << src << ":\n";
-    for (int i = 0; i < v; i++) {
-        cout << "To " << i << ": " << d[i] << endl;
+    void printGraph() {
+        cout << "\nAdjacency Matrix:\n   ";
+        for (int i = 0; i < v; i++) {
+            cout << city[i] << " ";
+        }
+        cout << endl;
+        for (int i = 0; i < v; i++) {
+            cout << city[i] << " ";
+            for (int j = 0; j < v; j++) {
+                cout << a[i][j] << "   ";
+            }
+            cout << endl;
+        }
     }
-}
 
+    void shortpath(string srcName) {
+        int d[10], visited[10] = {0};
+        int src = getIndex(srcName);
 
- 
+        if (src == -1) {
+            cout << "Invalid source city.\n";
+            return;
+        }
 
+        for (int i = 0; i < v; i++) {
+            d[i] = 9999;
+        }
+        d[src] = 0;
 
+        for (int cnt = 0; cnt < v - 1; cnt++) {
+            int u = -1, min = 9999;
+            for (int i = 0; i < v; i++) {
+                if (!visited[i] && d[i] < min) {
+                    min = d[i];
+                    u = i;
+                }
+            }
 
+            if (u == -1) break;
+            visited[u] = 1;
+
+            for (int i = 0; i < v; i++) {
+                if (!visited[i] && a[u][i]) {
+                    int temp = d[u] + a[u][i];
+                    if (temp < d[i]) {
+                        d[i] = temp;
+                    }
+                }
+            }
+        }
+
+        cout << "\nShortest distances from " << srcName << ":\n";
+        for (int i = 0; i < v; i++) {
+            cout << "To " << city[i] << ": " << d[i] << endl;
+        }
+    }
 };
 
-int main()
-{
+int main() {
     int vx;
+    cout << "Enter the number of cities: ";
+    cin >> vx;
 
-    cout<<"\nEnter the number of vertices: ";
-    cin>>vx;
     Graph g(vx);
-
+    g.inputCities();
     g.addEdge();
     g.printGraph();
-    g.shortpath(0);
-     return 0;
+
+    string src;
+    cout << "\nEnter source city to find shortest paths: ";
+    cin >> src;
+    g.shortpath(src);
+
+    return 0;
 }
 
